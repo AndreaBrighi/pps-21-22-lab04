@@ -4,20 +4,38 @@ import List.*
 
 trait Student:
   def name: String
+
   def year: Int
-  def enrolling(course: Course): Unit // the student participates to a Course
+
+  def enrolling(courses: Course*): Unit // the student participates to a Course
+
   def courses: List[String] // names of course the student participates to
+
   def hasTeacher(teacher: String): Boolean // is the student participating to a course of this teacher?
 
 trait Course:
   def name: String
+
   def teacher: String
 
 object Student:
-  def apply(name: String, year: Int = 2017): Student = ???
+  def apply(name: String, year: Int = 2017): Student = StudentImpl(name, year)
+
+  private case class StudentImpl(override val name: String, override val year: Int) extends Student :
+
+    private var _courses: List[Course] = List.Nil()
+
+    override def enrolling(courses: Course*): Unit = courses.foreach(course => _courses = List.append(Cons(course, Nil()), _courses))
+
+    override def courses: List[String] = List.map(_courses)(course => course.name)
+
+    override def hasTeacher(teacher: String): Boolean = List.contains(List.map(_courses)(course => course.teacher), teacher)
 
 object Course:
-  def apply(name: String, teacher: String): Course = ???
+  def apply(name: String, teacher: String): Course = CourseImpl(name, teacher)
+
+  private case class CourseImpl(override val name: String, override val teacher: String) extends Course
+
 
 @main def checkStudents(): Unit =
   val cPPS = Course("PPS", "Viroli")
@@ -38,10 +56,10 @@ object Course:
   println(s1.hasTeacher("Ricci")) // true
 
 /** Hints:
-  *   - simply implement Course, e.g. with a case class
-  *   - implement Student with a StudentImpl keeping a private Set of courses
-  *   - try to implement in StudentImpl method courses with map
-  *   - try to implement in StudentImpl method hasTeacher with map and find
-  *   - check that the two println above work correctly
-  *   - refactor the code so that method enrolling accepts a variable argument Course*
-  */
+ *   - simply implement Course, e.g. with a case class
+ *   - implement Student with a StudentImpl keeping a private Set of courses
+ *   - try to implement in StudentImpl method courses with map
+ *   - try to implement in StudentImpl method hasTeacher with map and find
+ *   - check that the two println above work correctly
+ *   - refactor the code so that method enrolling accepts a variable argument Course*
+ */
