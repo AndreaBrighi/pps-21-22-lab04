@@ -10,6 +10,11 @@ enum List[E]:
 
 // a companion object (i.e., module) for List
 object List:
+
+  def apply[A](elements:A*): List[A] = elements.length match
+    case 0 => Nil()
+    case _ => Cons(elements.head, List(elements.tail*))
+
   def sum(l: List[Int]): Int = l match
     case Cons(h, t) => h + sum(t)
     case _ => 0
@@ -27,6 +32,7 @@ object List:
     case Cons(_, t) => filter(t)(pred)
     case Nil() => Nil()
 
+  @tailrec
   def drop[A](list: List[A], n: Int): List[A] = (n, list) match
     case (0, l) => l
     case (n, List.Cons(_, tail)) => drop(tail, n - 1)
@@ -36,6 +42,7 @@ object List:
     case Cons(head, rest) => Cons(head, append(rest, right))
     case Nil() => right
 
+  @tailrec
   def foldLeft[A, B](list: List[A])(init: B)(f: (B, A) => B): B = list match
     case Nil() => init
     case Cons(h, t) => foldLeft(t)(f(init, h))(f)
@@ -47,6 +54,7 @@ object List:
 
   def length(list: List[_]): Int = List.sum(List.map(list)(_ => 1))
 
+  @tailrec
   def find[A](list: List[A])(f: A => Boolean): Option[A] = list match
     case Cons(elem, rest) if f(elem) => Some(elem)
     case Cons(elem, rest) => find(rest)(f)
