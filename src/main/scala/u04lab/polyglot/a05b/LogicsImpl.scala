@@ -15,6 +15,7 @@ class LogicsImpl(private val size: Int) extends Logics :
     case _ =>
       val random = Random()
       val x = random.nextInt(size)
+
       val y = random.nextInt(size)
       center = Some((x, y))
 
