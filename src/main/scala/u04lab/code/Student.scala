@@ -25,11 +25,11 @@ object Student:
 
     private var _courses: List[Course] = List.Nil()
 
-    override def enrolling(courses: Course*): Unit = courses.foreach(course => _courses = List.append(Cons(course, Nil()), _courses))
+    override def enrolling(courses: Course*): Unit = courses.foreach(course => _courses = Cons(course, _courses))
 
-    override def courses: List[String] = List.map(_courses)(course => course.name)
+    override def courses: List[String] = List.map(_courses)(_.name)
 
-    override def hasTeacher(teacher: String): Boolean = List.contains(List.map(_courses)(course => course.teacher), teacher)
+    override def hasTeacher(teacher: String): Boolean = List.contains(List.map(_courses)(_.teacher), teacher)
 
 object Course:
   def apply(name: String, teacher: String): Course = CourseImpl(name, teacher)
@@ -38,9 +38,9 @@ object Course:
 
 object sameTeacher:
   def unapply(courses: List[Course]): scala.Option[String] =
-    val teachers= map(courses)(c => c.teacher)
+    val teachers = map(courses)(_.teacher)
     teachers match
-      case Cons(head, tail) if foldLeft(map(teachers)(c => c == head))(true)( _ && _) => scala.Option(head)
+      case Cons(head, tail) if foldLeft(map(teachers)(_ == head))(true)(_ && _) => scala.Option(head)
       case _ => scala.Option.empty
 
 
