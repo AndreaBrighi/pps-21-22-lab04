@@ -40,7 +40,7 @@ object sameTeacher:
   def unapply(courses: List[Course]): scala.Option[String] =
     val teachers = map(courses)(_.teacher)
     teachers match
-      case Cons(head, tail) if foldLeft(map(teachers)(_ == head))(true)(_ && _) => scala.Option(head)
+      case Cons(head, tail) if allEquals(tail, head) => scala.Option(head)
       case _ => scala.Option.empty
 
 
