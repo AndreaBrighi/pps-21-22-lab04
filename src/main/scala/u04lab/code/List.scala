@@ -70,11 +70,7 @@ object List:
 
   def take[A](list: List[A], n: Int): List[A] = reverse(drop(reverse(list), length(list) - n))
 
-  @tailrec
-  def allEquals[A](list: List[A], elem: A): Boolean = list match
-    case Cons(h, t) if h == elem => t match
-      case Nil() => true
-      case _ => allEquals(t, elem)
-    case _ => false
+  def allEquals[A](list: List[A], elem: A): Boolean =
+    foldRight(list)(true)((a, b) => (a == elem) && b)
 
 end List
